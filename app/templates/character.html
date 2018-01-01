@@ -1,0 +1,136 @@
+<!-- extends base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+{% if g.user.is_authenticated %}
+	<div id="hidesaveform">
+		<p><button title="Spara/ändra" onclick="showSaveForm()">Spara/ändra</button></p>
+	</div>
+	<div id="showsaveform" style="display:none">
+		<form action="/savecharacter" method="POST">
+			{{ form.hidden_tag() }}
+			<fieldset>
+				<legend>Namn</legend>
+				{{ form.name(value=char.start_values['Namn']) }}
+			</fieldset>
+			<fieldset>
+				<legend>Kampanj</legend>
+				{{ form.campaign(value=char.campaign) }}
+			</fieldset>
+			<fieldset>
+				<legend>Anteckningar</legend>
+				{{ form.notes }}
+			</fieldset>
+			<input type="submit" value="Spara" title="Spara">
+		</form>
+	</div>
+{% endif %}
+<div class="printTableContainer">
+	<div class="printTableRow">
+		<div id="top">
+			<p class="printTableCell">
+			Namn: {{ char.start_values['Namn'] }}<br>
+			Total IV (utan rustning): {{ char.traits['Total IV'] }}<br>
+			Utmattningspoäng per rad: {{ char.traits['Uthållighet'] }}
+			</p>
+			<p class="printtableCell">
+			Nivå: {{ char.start_values['Nivå'] }}<br>
+			Yrke: {{ char.start_values['Yrke'] }}<br>
+			Ras: {{char.start_values['Ras'] }}<br>
+			<div class="printTableCell">
+			Kön: {{ char.start_values['Kön'] }}<br>
+			Ålder: {{ char.start_values['Ålder'] }}<br>
+			Längd: {{ char.start_values['Längd'] }}<br>
+			Huvudhand: {{ char.start_values['Huvudhand'] }}
+			</div>
+			</p>
+		</div>
+	</div><!-- printTableRow -->
+</div><!--printTableContainer-->
+<div class="printTableContainer">
+	<div class="printTableRow">
+		<div id="färdigheter" class="bgsilver printTableCell">
+			<h2>Färdigheter</h2>
+			<p>
+			Bas: {{ char.traits['Bas'] }}<br>
+			Skol: {{ char.traits['Skol'] }}, {{ char.traits['Special_skol'] }} specialiseringar<br>
+			Yrke: {{ char.traits['Yrke'] }}, {{ char.traits['Special_yrke'] }} specialiseringar<br>
+			{% if char.traits['Special_hobb'] != 0 %}
+				Hobby: {{ char.traits['Special_hobb'] }}<br>
+			{% endif %}
+			</p>
+			<p>
+			{% for i in char.skills.keys()|sort %}
+				{{ i }}: {{ char.skills[i] }}<br>
+			{% endfor %}
+			</p>
+		</div><!--färdigheter-->
+		<div class="printTableCell" id="rightcol">
+			<div class="printTableRow">
+				<div id="fysiska" class="printTableCell">
+					<h2>Fysiska egenskaper</h2>
+					<p>
+					{% for i in ['Konstitution','Rörlighet','Snabbhet','Uthållighet','Finmotorik','Grovmotorik'] %}
+						{{ i }}: {{ char.traits[i] }}<br>
+					{% endfor %}
+					</p>
+				</div><!--fysiska-->
+				<div id="mentala" class="bgsilver printTableCell">
+					<h2>Mentala egenskaper</h2>
+					<p>
+					{% for i in ['Perception','Koncentration','Praktisk','Teoretisk','Logisk','Emotionell'] %}
+						{{ i }}: {{ char.traits[i] }}<br>
+					{% endfor %}
+					</p>
+				</div><!--mentala-->
+			</div>
+			<div class="printTableContainer"><!--sinnen tålighet flytt-->
+			<div class="printTableRow">
+			<div class="printTableCell" id="cellSinnenFlytt"><!--sinnen flytt-->
+			<div class="printTableContainer">
+			<div class="printTableRow"><!--sinnen-->
+			<div id="sinnen" class="printTableCell">
+				<h2>Sinnen</h2>
+				<p>
+				{% for i in ['Syn','Hörsel','Lukt','Känsel','Smak','Utseende'] %}
+					{{ i }}: {{ char.traits[i] }}<br>
+				{% endfor %}
+				</p>
+			</div><!--sinnen-->
+			</div><!--row sinnen-->
+			<div class="printTableRow"><!--flytt-->
+			<div id="flytt" class="bgsilver printTableCell">
+				<h2>Förflyttning & Bärförmåga</h2>
+				<p>
+				Normal förflyttning: {{ char.move_carry['avrundat']['Normal förflyttning'] }} m/s<br>
+				Jogg: {{ char.move_carry['avrundat']['Jogg'] }} m/s<br>
+				Sprint: {{ char.move_carry['avrundat']['Sprint'] }} m/s<br>
+				Normal / 8 h: {{ char.move_carry['avrundat']['Normal / 8 h'] }} km<br>
+				Maximal förflyttning: {{ char.move_carry['avrundat']['Maximal förflyttning'] }} km<br>
+				Normal bärförmåga: {{ char.move_carry['avrundat']['Normal bärförmåga'] }} kg<br>
+				Maximal bärförmåga_ {{ char.move_carry['avrundat']['Maximal bärförmåga'] }}<br>
+				</p>
+			</div><!--flytt-->
+			</div><!--row flytt-->
+			</div><!--container sinnen och flytt-->
+			</div><!--sinnen flytt-->
+			<div id="tålighet" class="printTableCell">
+				<h2>Tålighet</h2>
+				<p>
+				{% for i in ['Huvud','Hals','Vänster axel','Höger axel','Bröstkorg','Vänster överarm','Höger överarm','Mage','Vänster underarm','Höger underarm','Vänster hand','Höger hand','Höft','Vänster lår','Höger lår','Vänster smalben','Höger smalben','Vänster fot','Höger fot'] %}
+					{{ i }}: {{ char.hitpoints[i] }}<br>
+				{% endfor %}
+				</p>
+			</div><!--tålighet-->
+			</div><!--printTableRow-->
+			</div><!--sinnen tålighet flytt-->
+		</div><!--högra kolumnerna-->
+	</div><!--printTableRow-->
+</div><!--printTableContainer-->
+<script>
+function showSaveForm() {
+	document.getElementById('hidesaveform').style.display = 'none';
+	document.getElementById('showsaveform').style.display = 'block';
+}
+</script>
+{% endblock %}

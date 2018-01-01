@@ -1,0 +1,19 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Redigera användarnamn</h1>
+	<form action="" method="post" name="edituser">
+		{{ form.hidden_tag() }}
+		<table>
+			<tr>
+				<td>Nytt användarnamn:</td>
+				<td>{{ form.nickname(size=24) }}</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" value="Spara" title="Spara"></td>
+			</tr>
+		</table>
+	</form>
+{% endblock %}

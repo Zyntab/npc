@@ -1,0 +1,24 @@
+<!-- extends base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Resultat:</h1>
+	<hr>
+	<p>Namn: {{ char.start_values['Namn'] }}<br>
+		Yrke: {{ char.start_values['Yrke'] }}<br>
+		Nivå: {{ char.start_values['nivå_min'] }} - {{ char.start_values['nivå_max'] }}<br>
+		Ras: {{ char.start_values['Ras'] }}<br>
+		Kön: {{ char.start_values['Kön'] }}<br>
+		Ålder: {% if char.start_values['Ålder'] != 'rng' %}
+							{{ char.start_values['Ålder'] }}<br>
+						{% else %}
+							{{ char.start_values['ålder_min'] }} - {{ char.start_values['ålder_max'] }}<br>
+						{% endif %}
+		Längd: {% if char.start_values['Längd'] != 'rng' %}
+							{{ char.start_values['Längd'] }}<br>
+						{% else %}
+							{{ char.start_values['längd_min'] }} - {{ char.start_values['längd_max'] }}<br>
+						{% endif %}
+		Huvudhand: {{ char.start_values['Huvudhand'] }}<br>
+	</p>
+{% endblock %}

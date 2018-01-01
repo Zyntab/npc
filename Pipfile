@@ -1,0 +1,31 @@
+[[source]]
+
+verify_ssl = true
+name = "pypi"
+url = "https://pypi.python.org/simple"
+
+
+[requires]
+
+python_version = "3.5"
+
+
+[dev-packages]
+
+
+
+[packages]
+
+flask = "*"
+flask-login = "*"
+flask-openid = "*"
+flask-mail = "*"
+flask-sqlalchemy = "*"
+sqlalchemy-migrate = "*"
+flask-whooshalchemy = "*"
+flask-wtf = "*"
+flask-babel = "*"
+guess-language = "*"
+flipflop = "*"
+coverage = "*"
+rauth = "*"

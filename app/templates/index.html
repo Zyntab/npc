@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+	<!--<img src="images/dice.jpeg">-->
+	<h1 id="top">Hej {{ user.nickname }}! Vill du slumpa fram en karaktär till Hed?</h1>
+		<p>
+		Ange värden nedan eller låt denna webapp slumpa fram värden
+		för att sedan skapa en karaktär enligt alla regler för
+		karaktärsskapande.
+		</p>
+		<form action="/character" name="character" method="POST">
+			{{ form.hidden_tag() }}
+			<p>
+				<input type="submit" value="Skapa karaktär" title="Skapa karaktär">
+			</p>
+			<fieldset>
+				<legend>Namn</legend>
+				{{ form.name }}
+				<!--<input type="text" name="Namn" value="*slump*">-->
+			</fieldset>
+			<fieldset>
+				<legend>Yrke</legend>
+				<div class="table">
+				<div class="tableRow">
+					{% for subfield in form.job %}
+						{{ subfield }}{{ subfield.label }} | 
+					{% endfor %}
+				</div><!--tableRow-->
+				</div><!--table-->
+			</fieldset>
+			<fieldset>
+				<legend>Nivå</legend> 
+					<label for="nivå_min">min: 
+					{{ form.lvl_min }}
+					</label>
+					<label for="nivå_max">max: 
+					{{ form.lvl_max }}
+					</label>
+			</fieldset>
+			<fieldset>
+				<legend>Ras</legend>
+				{% for subfield in form.race %}
+					{{ subfield }}{{ subfield.label }} |
+				{% endfor %}
+			</fieldset>
+			<fieldset>
+				<legend>Kön</legend>
+				{% for subfield in form.gender %}
+					{{ subfield }}{{ subfield.label }} | 
+				{% endfor %}
+			</fieldset>
+			<fieldset>
+				<legend>Ålder</legend>
+				{% for subfield in form.age %}
+					{{ subfield }}{{ subfield.label }} |
+					{% if subfield.id == 'age-4' %}
+						<br>
+					{% endif %}
+				{% endfor %}
+				Min:{{ form.age_min }} Max:{{ form.age_max }}
+		</fieldset>
+		<fieldset>
+			<legend>Längd</legend>
+			{% for subfield in form.height %}
+				{{ subfield }}{{ subfield.label }} |
+				{% if subfield.id == 'height-2' %}
+					<br>
+				{% endif %}
+			{% endfor %}
+			Min:{{ form.height_min }} Max:{{ form.height_max }}
+		</fieldset>
+		<fieldset>
+			<legend>Huvudhand</legend>
+			{% for subfield in form.hand %}
+				{{ subfield }}{{ subfield.label }} |
+			{% endfor %}
+<!--
+			<label for="hand_slump">
+			<input type="radio" id="hand_slump" name="Huvudhand" value="slump" checked>
+			*slumpa* </label>
+			<label for="höger">
+			<input type="radio" id="höger" name="Huvudhand" value="Högerhänt">
+			Högerhänt </label>
+			<label for="vänster">
+			<input type="radio" id="vänster"name="Huvudhand" value="Vänsterhänt">
+			Vänsterhänt </label>
+			<label for="dubbel">
+			<input type="radio" id="dubbel" name="Huvudhand" value="Dubbelhänt">
+			Dubbelhänt</label>
+-->
+		</fieldset>
+		<p>
+		<input type="submit" value="Skapa karaktär">
+		</p>
+		</form>
+	<p>
+	<strong>Made by ZyntabSoft</strong>
+	<br>
+	</p>
+{% endblock %}

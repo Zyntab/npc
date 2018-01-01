@@ -1,0 +1,81 @@
+<!-- extends base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Resultat:</h1>
+	<hr>
+	<h2>Start values:</h2>
+		<p>Namn: {{ char.start_values['Namn'] }}<br>
+		Yrke: {{ char.start_values['Yrke'] }}<br>
+		Nivå: {{ char.start_values['Nivå'] }}<br>
+		Ras: {{ char.start_values['Ras'] }}<br>
+		Kön: {{ char.start_values['Kön'] }}<br>
+		Ålder: {{ char.start_values['Ålder'] }}<br>
+		Längd: {{ char.start_values['Längd'] }}<br>
+		Huvudhand: {{ char.start_values['Huvudhand'] }}<br>
+	</p>
+	<h2>Traits:</h2>
+	<p>
+		Bas: {{ char.traits['Bas'] }}<br>
+		Skol: {{ char.traits['Skol'] }}, spec: {{ char.traits['Special_skol'] }}<br>
+		Yrke: {{ char.traits['Yrke'] }}, spec: {{ char.traits['Special_yrke'] }}<br>
+		Hobby: {{ char.traits['Special_hobb'] }}<br>
+	</p>
+	<p>
+		Fysisk: {{ char.traits['Fysisk'] }}<br>
+		Mental: {{ char.traits['Mental'] }}<br><br>
+		Konst_rörl: {{ char.traits['konst_rörl'] }}<br>
+		Konstitution: {{ char.traits['Konstitution'] }}<br>
+		Rörlighet: {{ char.traits['Rörlighet'] }}<br><br>
+		Snabb_uth: {{ char.traits['snabb_uth'] }}<br>
+		Snabbhet: {{ char.traits['Snabbhet'] }}<br>
+		Uthållighet: {{ char.traits['Uthållighet'] }}<br><br>
+		Finm_grovm: {{ char.traits['finm_grovm'] }}<br>
+		Finmotorik: {{ char.traits['Finmotorik'] }}<br>
+		Grovmotorik: {{ char.traits['Grovmotorik'] }}<br><br>
+		Perc_konc: {{ char.traits['perc_konc'] }}<br>
+		Perception: {{ char.traits['Perception'] }}<br>
+		Koncentration: {{ char.traits['Koncentration'] }}<br><br>
+		Prak_teor: {{ char.traits['prak_teor'] }}<br>
+		Praktisk: {{ char.traits['Praktisk'] }}<br>
+		Teoretisk: {{ char.traits['Teoretisk'] }}<br><br>
+		Log_emo: {{ char.traits['log_emo'] }}<br>
+		Logisk: {{ char.traits['Logisk'] }}<br>
+		Emotionell: {{ char.traits['Emotionell'] }}<br>
+	</p>
+	<h2>Skills:</h2>
+	<p>
+		{% for i in char.skills %}
+			{{ i }}: {{ char.skills[i] }}<br>
+		{% endfor %}
+	</p>
+	<h2>Hitpoints:</h2>
+	<p>
+		{% for i in char.hitpoints %}
+			{{ i }}: {{ char.hitpoints[i] }}<br>
+		{% endfor %}
+	</p>
+	<h2>Sinnen:</h2>
+	<p>
+		Syn: {{ char.traits['Syn'] }}<br>
+		Hörsel: {{ char.traits['Hörsel'] }}<br>
+		Lukt: {{ char.traits['Lukt'] }}<br>
+		Känsel: {{ char.traits['Känsel'] }}<br>
+		Smak: {{ char.traits['Smak'] }}<br>
+		Utseende: {{ char.traits['Utseende'] }}<br>
+	</p>
+	<h2>Move & Carry:</h2>
+	<p>
+		{% for i in char.move_carry['avrundat'] %}
+			{{ i }}: {{ char.move_carry['avrundat'][i] }} 
+			{% if i in ['Normal förflyttning','Jogg','Sprint'] %}m/s
+			{% elif i in ['Normal / 8 h','Maximal förflyttning'] %}km
+			{% else %}kg
+			{% endif %}<br>
+		{% endfor %}
+	</p>
+	<h2>Trace Buys:</h2>
+		{% for i in char.trace_buys %}
+			{{ i }}<br>
+		{% endfor %}
+{% endblock %}

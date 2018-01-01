@@ -1,0 +1,12 @@
+<table>
+	<tr valign="top">
+		<td><a href="{{ url_for('character', charname=char.name) }}" title="{{ lit_eval(char.start_values)['Namn'] }}">{{ lit_eval(char.start_values)['Namn'] }}</a></td>
+		<td>Skapad: {{ momentjs(char.timestamp).calendar() }}</td>
+	</tr>
+	<tr>
+		<td>Kampanj: </td><td>{{ char.campaign }}</td>
+	</tr>
+	<tr><td>Anteckningar: </td><td>{{ char.notes }}</td>
+	</tr>
+</table>
+<hr>

@@ -1,0 +1,17 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Användare: {{ user.nickname }}</h1>
+	<p><a href="{{ url_for('edituser') }}" title="Ändra användarnamn">Ändra användarnamn</a></p>
+	<hr>
+	<div>
+	{% for char in chars %}
+		{% include 'char_short.html' %}
+	{% endfor %}
+	<hr>
+	</div>
+	<div>
+	<p><a href="{{ url_for('invite') }}" title="Bjud in användare">Bjud in användare</a></p>
+	</div>
+{% endblock %}

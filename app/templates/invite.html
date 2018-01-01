@@ -1,0 +1,11 @@
+<!--extends base layout-->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Bjud in användare</h2>
+<form action="" method="post">
+{{ form.hidden_tag() }}
+<p>Mailaddress: {{ form.invite_email }}</p>
+<p><input type="submit" value="Bjud in" title="Bjud in"></p>
+</form>
+{% endblock %}

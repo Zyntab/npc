@@ -1,0 +1,13 @@
+Du inbjuds att skapa ett konto på NPC-skaparen.
+När du har ett konto får du tillgång till alla funktioner,
+inte bara att skapa en karaktär utan även spara och dinga!
+
+Använd nedanstående länk för att skapa ditt konto:
+{{ create_url }}
+
+Nästa gång du vill logga in efter att ditt konto är skapat använer du denna:
+{{ index_url }}
+
+Med vänlig hälsning
+
+NPC-teamet på ZyntabSoft

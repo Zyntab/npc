@@ -1,0 +1,8 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Ett oväntat fel har inträffat</h1>
+	<p>Administratören har underrättats. Beklagar olägenheten!</p>
+	<p><a href="{{ url_for('index') }}" title="Startsidan">Tillbaka till startsidan</a></p>
+{% endblock %}
