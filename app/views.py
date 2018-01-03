@@ -211,6 +211,14 @@ def savecharacter():
         db.session.commit()
         return redirect(url_for('character', charname=c.name))
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/privacy_policy')
+def privacy_policy():
+    return render_template('privacy_policy.html')
+
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html'), 404
