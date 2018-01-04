@@ -3,8 +3,8 @@
 
 {% block content %}
 {% if g.user.is_authenticated %}
-	{% if charname %}
 		<form action="/savecharacter" method="POST">
+			<input type="submit" value="Spara" title="Spara">
 			{{ form.hidden_tag() }}
 			<fieldset>
 				<legend>Namn</legend>
@@ -18,15 +18,16 @@
 				<legend>Anteckningar</legend>
 				{{ form.notes }}
 			</fieldset>
-			<input type="submit" value="Spara" title="Spara">
 		</form>
-	{% endif %}
+{% endif %}
+{% if charname %}
+<a href="{{ url_for('deletecharacter', charname=charname) }}" title="Radera karaktär">Radera</a>
 {% endif %}
 <div class="printTableContainer">
 	<div class="printTableRow">
 		<div id="top">
 			<p class="printTableCell">
-		{% if not charname %}
+		{% if not g.user.is_authenticated %}
 			Namn: {{ char.start_values['Namn'] }}<br>
 		{% endif %}
 			Total IV (utan rustning): {{ char.traits['Total IV'] }}<br>

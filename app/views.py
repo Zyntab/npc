@@ -212,13 +212,14 @@ def savecharacter():
         db.session.commit()
         return redirect(url_for('character', charname=c.name))
 
-@app.route('/deletecharacter', methods=['GET','POST'])
+@app.route('/deletecharacter/<charname>', methods=['GET','POST'])
 @login_required
-def deletecharacter(charname=None):
+def deletecharacter(charname):
     c = g.user.characters.filter_by(name=charname).first()
     db.session.delete(c)
     db.session.commit()
-    return redirect(url_for('user'))
+    flash('Karaktären har raderats.')
+    return redirect(url_for('user', nickname=g.user.nickname))
 
 @app.route('/about')
 def about():
