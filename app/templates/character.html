@@ -3,10 +3,7 @@
 
 {% block content %}
 {% if g.user.is_authenticated %}
-	<div id="hidesaveform">
-		<p><button title="Spara/ändra" onclick="showSaveForm()">Spara/ändra</button></p>
-	</div>
-	<div id="showsaveform" style="display:none">
+	{% if charname %}
 		<form action="/savecharacter" method="POST">
 			{{ form.hidden_tag() }}
 			<fieldset>
@@ -23,13 +20,15 @@
 			</fieldset>
 			<input type="submit" value="Spara" title="Spara">
 		</form>
-	</div>
+	{% endif %}
 {% endif %}
 <div class="printTableContainer">
 	<div class="printTableRow">
 		<div id="top">
 			<p class="printTableCell">
+		{% if not charname %}
 			Namn: {{ char.start_values['Namn'] }}<br>
+		{% endif %}
 			Total IV (utan rustning): {{ char.traits['Total IV'] }}<br>
 			Utmattningspoäng per rad: {{ char.traits['Uthållighet'] }}
 			</p>
