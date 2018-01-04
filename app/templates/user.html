@@ -6,7 +6,7 @@
 	<p><a href="{{ url_for('edituser') }}" title="Ändra användarnamn">Ändra användarnamn</a></p>
 	<hr>
 	<div>
-	{% for char in chars %}
+	{% for char in chars[::-1] %}
 		{% include 'char_short.html' %}
 	{% endfor %}
 	<hr>

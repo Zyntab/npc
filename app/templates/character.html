@@ -3,11 +3,8 @@
 
 {% block content %}
 {% if g.user.is_authenticated %}
-	<div id="hidesaveform">
-		<p><button title="Spara/ändra" onclick="showSaveForm()">Spara/ändra</button></p>
-	</div>
-	<div id="showsaveform" style="display:none">
 		<form action="/savecharacter" method="POST">
+			<input type="submit" value="Spara" title="Spara">
 			{{ form.hidden_tag() }}
 			<fieldset>
 				<legend>Namn</legend>
@@ -21,15 +18,18 @@
 				<legend>Anteckningar</legend>
 				{{ form.notes }}
 			</fieldset>
-			<input type="submit" value="Spara" title="Spara">
 		</form>
-	</div>
+{% endif %}
+{% if charname %}
+<a href="{{ url_for('deletecharacter', charname=charname) }}" title="Radera karaktär">Radera</a>
 {% endif %}
 <div class="printTableContainer">
 	<div class="printTableRow">
 		<div id="top">
 			<p class="printTableCell">
+		{% if not g.user.is_authenticated %}
 			Namn: {{ char.start_values['Namn'] }}<br>
+		{% endif %}
 			Total IV (utan rustning): {{ char.traits['Total IV'] }}<br>
 			Utmattningspoäng per rad: {{ char.traits['Uthållighet'] }}
 			</p>

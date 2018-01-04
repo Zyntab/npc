@@ -62,7 +62,8 @@ def character(charname=None):
                 return render_template('character.html',
                                        char=char,
                                        title=char.start_values['Namn'],
-                                       form=form)
+                                       form=form,
+                                       charname=charname)
             except:
                 flash('Du verkar inte ha någon karaktär med det namnet')
                 return redirect(url_for('index'))
@@ -210,6 +211,15 @@ def savecharacter():
             c.notes = request.form.get('notes', None)
         db.session.commit()
         return redirect(url_for('character', charname=c.name))
+
+@app.route('/deletecharacter/<charname>', methods=['GET','POST'])
+@login_required
+def deletecharacter(charname):
+    c = g.user.characters.filter_by(name=charname).first()
+    db.session.delete(c)
+    db.session.commit()
+    flash('Karaktären har raderats.')
+    return redirect(url_for('user', nickname=g.user.nickname))
 
 @app.route('/about')
 def about():
