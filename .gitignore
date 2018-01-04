@@ -1,2 +1,2 @@
-*.db
-/tmp/
+app.db
+tmp/npc.log

@@ -726,3 +726,5 @@ ValueError: empty range for randrange() (4,4, 0)
 2018-01-04 21:10:24,890 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
 2018-01-04 21:10:25,374 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
 2018-01-04 21:11:08,107 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-04 21:13:46,603 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-04 21:13:47,039 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
