@@ -548,3 +548,92 @@
 2017-12-31 13:54:49,591 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
 2017-12-31 13:54:50,015 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
 2017-12-31 14:06:08,497 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-02 11:26:05,676 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-02 11:31:20,394 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-02 11:31:20,826 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-02 14:38:53,227 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:45]
+2018-01-02 14:38:53,783 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:45]
+2018-01-02 14:39:02,828 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:45]
+2018-01-02 14:39:27,057 ERROR: Exception on /character [POST] [in /home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py:1560]
+Traceback (most recent call last):
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/viktor/Python/flask/npc/app/views.py", line 42, in character
+    char = create_char(values)
+  File "/home/viktor/Python/flask/npc/app/hednpc.py", line 123, in create_char
+    start_values = calc_start_values(inputs, weights)
+  File "/home/viktor/Python/flask/npc/app/hednpc.py", line 49, in calc_start_values
+    output['Nivå'] = random.randint(inlvl_min, inlvl_max)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/random.py", line 218, in randint
+    return self.randrange(a, b+1)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/random.py", line 196, in randrange
+    raise ValueError("empty range for randrange() (%d,%d, %d)" % (istart, istop, width))
+ValueError: empty range for randrange() (3,2, -1)
+2018-01-02 14:40:05,968 ERROR: Exception on /character [POST] [in /home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py:1560]
+Traceback (most recent call last):
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/viktor/Python/flask/npc/app/views.py", line 42, in character
+    char = create_char(values)
+  File "/home/viktor/Python/flask/npc/app/hednpc.py", line 123, in create_char
+    start_values = calc_start_values(inputs, weights)
+  File "/home/viktor/Python/flask/npc/app/hednpc.py", line 49, in calc_start_values
+    output['Nivå'] = random.randint(inlvl_min, inlvl_max)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/random.py", line 218, in randint
+    return self.randrange(a, b+1)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/random.py", line 196, in randrange
+    raise ValueError("empty range for randrange() (%d,%d, %d)" % (istart, istop, width))
+ValueError: empty range for randrange() (4,4, 0)
+2018-01-02 14:41:34,504 ERROR: Exception on /character [POST] [in /home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py:1560]
+Traceback (most recent call last):
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1982, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1614, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1517, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/_compat.py", line 33, in reraise
+    raise value
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1612, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/site-packages/flask/app.py", line 1598, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/viktor/Python/flask/npc/app/views.py", line 42, in character
+    char = create_char(values)
+  File "/home/viktor/Python/flask/npc/app/hednpc.py", line 123, in create_char
+    start_values = calc_start_values(inputs, weights)
+  File "/home/viktor/Python/flask/npc/app/hednpc.py", line 49, in calc_start_values
+    output['Nivå'] = random.randint(inlvl_min, inlvl_max)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/random.py", line 218, in randint
+    return self.randrange(a, b+1)
+  File "/home/viktor/.local/share/virtualenvs/npc-9yq26-O2/lib/python3.5/random.py", line 196, in randrange
+    raise ValueError("empty range for randrange() (%d,%d, %d)" % (istart, istop, width))
+ValueError: empty range for randrange() (4,4, 0)
+2018-01-02 14:43:30,446 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:45]
+2018-01-02 14:45:44,865 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:45]
+2018-01-02 14:54:32,286 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-02 15:05:35,225 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-03 11:21:13,427 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-03 11:21:13,942 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-03 11:21:57,181 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
+2018-01-03 11:21:57,623 INFO: npc-skaparen startup [in /home/viktor/Python/flask/npc/app/__init__.py:39]
