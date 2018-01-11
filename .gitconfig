@@ -1,0 +1,15 @@
+[difftool "codecompare"]
+cmd = "/home/viktor/Downloads/codecompare/codecompare.exe" -W \"$LOCAL\" \"$REMOTE\"
+renames = true
+
+[diff]
+tool = codecompare
+guitool = codecompare
+[mergetool "codecompare"]
+cmd = "/home/viktor/Downloads/codecompare/codecompare.exe" -MF \"$LOCAL\" -TF \"$REMOTE\" -BF \"$BASE\" -RF \"$MERGED\"
+trustExitCode = true
+[mergetool]
+keepBackup = false
+[merge]
+tool = codecompare
+guitool = codecompare
