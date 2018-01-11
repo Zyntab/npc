@@ -1,4 +1,3 @@
 *.pyc
-*.db
 /tmp/
-
+app.db
