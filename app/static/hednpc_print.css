@@ -1,0 +1,82 @@
+body {
+	font-size: 10pt;
+	font-family: Georgia, Times, Serif;
+}
+
+nav {
+	display: none;
+}
+
+h2 {
+	color: black;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.printTableContainer {
+	display: table;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+.printTableRow {
+	display: table-row;
+	border-collapse: collapse;
+	border-spacing: 0px;
+}
+
+.printTableCell {
+	display: table-cell;
+	border: thin black solid;
+	border-collapse: collapse;
+	border-spacing: 0px;
+	padding-left: 10px;
+}
+
+#top {
+	padding-top: 0px;
+}
+
+#top .printTableCell {
+	width: 200px;
+}
+
+.topCell {
+	width: 230px;
+	padding-left: 10px;
+}
+
+#rightcol, #cellSinnenFlytt {
+	padding-left: 0px;
+}
+
+#färdigheter {
+	width: 40%;
+}
+
+#fysiska, #mentala {
+	width: 200px;
+}
+
+#sinnen, #flytt {
+	width: 230px;
+}
+
+#tålighet {
+	width: 150px;
+}
+
+button {
+	display: none;
+}
+
+.webOnly {
+	display: none;
+}
+
+.printOnly {
+	display: initial;
+}
+
+#notes {
+	width: 400px;
+}
