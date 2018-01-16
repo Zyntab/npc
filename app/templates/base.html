@@ -12,6 +12,8 @@
 	</title>
 	<link type="text/css" rel="stylesheet" 
 				href="{{ url_for('static', filename='hednpc_webapp.css') }}">
+	<link type="text/css" rel="stylesheet" media="print"
+				href="{{ url_for('static', filename='hednpc_print.css') }}">
 	<link rel="icon" href="favicon.png">
 	<script src="/static/js/moment-with-locales.js"></script>
 </head>
@@ -28,7 +30,7 @@
 	</nav>
 	{% with messages = get_flashed_messages() %}
 		{% if messages %}
-		<div id="flash">
+		<div id="flash" class="webOnly">
 			<ul>
 			{% for message in messages %}
 				<li>{{ message }}</li>

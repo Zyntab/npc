@@ -3,6 +3,7 @@
 
 {% block content %}
 {% if g.user.is_authenticated %}
+	<div class="webOnly">
 		<form action="/savecharacter" method="POST">
 			<input type="submit" value="Spara" title="Spara">
 			{{ form.hidden_tag() }}
@@ -19,33 +20,41 @@
 				{{ form.notes }}
 			</fieldset>
 		</form>
+	</div>
 {% endif %}
 {% if charname %}
-<a href="{{ url_for('deletecharacter', charname=charname) }}" title="Radera karaktär">Radera</a>
+<a class="webOnly" href="{{ url_for('deletecharacter', charname=charname) }}" title="Radera karaktär">Radera</a>
 {% endif %}
 <div class="printTableContainer">
+	<div id="top">
 	<div class="printTableRow">
-		<div id="top">
-			<p class="printTableCell">
+			<div class="printTableCell topCell">
+			<p>
 		{% if not g.user.is_authenticated %}
 			Namn: {{ char.start_values['Namn'] }}<br>
+		{% else %}
+			<span class="printOnly">Namn: {{ char.start_values['Namn'] }}<br></span>
 		{% endif %}
 			Total IV (utan rustning): {{ char.traits['Total IV'] }}<br>
 			Utmattningspoäng per rad: {{ char.traits['Uthållighet'] }}
 			</p>
-			<p class="printtableCell">
+			</div>
+			<div class="printtableCell topCell">
+			{% if char.campaign %}
+			<span class="printOnly">Kampanj: {{ char.campaign }}<br></span>
+			{% endif %}
 			Nivå: {{ char.start_values['Nivå'] }}<br>
 			Yrke: {{ char.start_values['Yrke'] }}<br>
 			Ras: {{char.start_values['Ras'] }}<br>
-			<div class="printTableCell">
+			</div>
+			<div class="printTableCell topCell">
 			Kön: {{ char.start_values['Kön'] }}<br>
 			Ålder: {{ char.start_values['Ålder'] }}<br>
 			Längd: {{ char.start_values['Längd'] }}<br>
 			Huvudhand: {{ char.start_values['Huvudhand'] }}
 			</div>
-			</p>
-		</div>
 	</div><!-- printTableRow -->
+	</div><!-- top -->
 </div><!--printTableContainer-->
 <div class="printTableContainer">
 	<div class="printTableRow">
@@ -124,6 +133,14 @@
 			</div><!--tålighet-->
 			</div><!--printTableRow-->
 			</div><!--sinnen tålighet flytt-->
+			{% if char.notes %}
+			<div class="printTableRow printOnly">
+				<div id="notes" class="printTableCell">
+				<h2>Anteckningar</h2>
+				<p>{{ char.notes }}</p>
+				</div>
+			</div>
+			{% endif %}
 		</div><!--högra kolumnerna-->
 	</div><!--printTableRow-->
 </div><!--printTableContainer-->

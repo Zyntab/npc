@@ -210,6 +210,7 @@ def savecharacter():
         if request.form.get('notes', None) != session['char']['notes']:
             c.notes = request.form.get('notes', None)
         db.session.commit()
+        flash('Karaktären har sparats som "%s".' % c.name)
         return redirect(url_for('character', charname=c.name))
 
 @app.route('/deletecharacter/<charname>', methods=['GET','POST'])
