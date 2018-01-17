@@ -16,7 +16,7 @@ def index():
     user = g.user
     form = CharacterForm()
     return render_template('index.html',
-                           title='Home',
+                           title='Hem',
                            user=user,
                            form=form)
 
@@ -154,6 +154,7 @@ def user(nickname):
         return redirect(url_for('index'))
     chars = user.characters.order_by('timestamp').all()
     return render_template('user.html',
+                           title = 'Profil',
                            user=user,
                            chars=chars,
                            lit_eval=ast.literal_eval)
@@ -170,7 +171,9 @@ def edituser():
         return redirect(url_for('edituser'))
     else:
         form.nickname.data = g.user.nickname
-    return render_template('edituser.html', form=form)
+    return render_template('edituser.html',
+                           title='Ändra namn',
+                           form=form)
 
 @app.route('/invite', methods=['GET','POST'])
 @login_required
@@ -229,6 +232,7 @@ def lvlup(charname):
     char = load_char(charname, user)
     form = lvlupForm()
     return render_template('lvlup.html',
+                           title='Dinga %s' % (char.start_values['Namn']),
                            user=user,
                            char=char,
                            form=form)
@@ -257,21 +261,29 @@ def ding(charname):
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about.html',
+                           title='Om')
+
+@app.route('/aboutHed')
+def aboutHed():
+    return render_template('aboutHed.html',
+                           title='Om Hed')
 
 @app.route('/privacy_policy')
 def privacy_policy():
-    return render_template('privacy_policy.html')
+    return render_template('privacy_policy.html',
+                           title='Integritetspolicy')
 
 @app.route('/todo')
 def todo():
-    return render_template('todo.html')
+    return render_template('todo.html',
+                           title='Kommande')
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'), 404
+    return render_template('404.html',title='Filen hittades inte'), 404
 
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    return render_template('500.html'), 500
+    return render_template('500.html',title='Oväntat fel'), 500
