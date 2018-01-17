@@ -16,6 +16,7 @@ import app.namn as namn
 from app import db, models
 import datetime
 import ast
+from .avrunda import avrunda
 
 #cgitb.enable()
 
@@ -112,7 +113,7 @@ def gendermods(char_traits, race, gender):
 def calc_start_points(level, age):
     start_points = 15
     if level > 1: start_points += 2
-    start_points += int(round(age/4))
+    start_points += int(avrunda(None, age/4))
     start_points += (level-1)*4
     return start_points
 
@@ -134,7 +135,7 @@ def load_char(charname, user):
     values = {'id':c.id,
               'timestamp':c.timestamp,
               'name':c.name,
-              'trace_buys':c.trace_buys,
+              'trace_buys':lit_eval(c.trace_buys),
               'start_values':lit_eval(c.start_values),
               'weights':lit_eval(c.weights),
               'traits':lit_eval(c.traits),

@@ -11,6 +11,7 @@ import app.weights as weightsmodule
 from .avrunda import avrunda
 import importlib
 from app import db, models
+from .hedtypes import agecats, age_mods
 
 class Npc:
     def trace(self, trait, change):
@@ -233,10 +234,56 @@ class Npc:
                 'notes':''}
                 
 
-    #def ding(self, newlvl, newage):
-    #    oldlvl = self.start_values['niva']
-    #    oldage = self.start_values['alder']
-    #    oldagecat = self.start_values['alderskategori']
+    def ding(self, lvls, years):
+        self.trace_buys.append('DING: %s levels, %s years' % (lvls, years))
+        oldlvl = self.start_values['Nivå']
+        newlvl = oldlvl + int(lvls)
+        oldage = self.start_values['Ålder']
+        newage = oldage + int(years)
+        points = 0
+        if newage != oldage:
+            old_age_points = int(avrunda(None, oldage/4))
+            new_age_points = int(avrunda(None, newage/4))
+            points += (new_age_points - old_age_points)
+            self.start_values['Ålder'] = newage
+            oldagecat = self.start_values['Ålderskategori']
+            cats = dict(agecats[self.start_values['Ras']])
+            if newage <= cats['Ung']:
+                newagecat = 'Ung'
+            elif newage <= cats['Mogen']:
+                newagecat = 'Mogen'
+            elif newage <= cats['Medel']:
+                newagecat = 'Medel'
+            elif newage <= cats['Gammal']:
+                newagecat = 'Gammal'
+            else:
+                newagecat = 'Åldring'
+            if newagecat != oldagecat:
+                self.trace_buys.append('Ändra ålderskategori: %s => %s' % (oldagecat, newagecat))
+                self.change_agecat(oldagecat, newagecat)
+                self.start_values['Ålderskategori'] = newagecat
+        if newlvl != oldlvl:
+            points += int(lvls) * 4
+            if oldlvl == 1:
+                points += 2
+            self.start_values['Nivå'] = newlvl
+        self.points_left += points
+        self.trace_buys.append('Sparade poäng: +%s' % points)
+        self.dist_points()
+        self.level_specials(int(lvls))
+        self.skills = self.calc_skills()
+        self.hitpoints = self.calc_hitpoints()
+        self.traits['Total IV'] = self.calc_iv()
+        self.move_carry['exakt'] = self.calc_move_carry()
+        self.move_carry['avrundat'] = self.round_move_carry()
+
+    def change_agecat(self, old, new):
+        for i in age_mods[old]:
+            self.traits[i] += (age_mods[old][i] * -1)
+            self.trace_buys.append('%s: %s' % (i, age_mods[old][i]*-1))
+        for i in age_mods[new]:
+            self.traits[i] += age_mods[new][i]
+            self.trace_buys.append('%s: %s' % (i, age_mods[new][i]))
 
     
 class LoadNpc(Npc):

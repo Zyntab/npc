@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
-from .forms import LoginForm, EditForm, CharacterForm, InviteForm, SaveCharForm
+from .forms import LoginForm, EditForm, CharacterForm, InviteForm, SaveCharForm, lvlupForm
 from .models import User, OAuthSignIn, UserTokens
 import ast
 from .hednpc import create_char, load_char, save_char, unique_charname
@@ -221,6 +221,39 @@ def deletecharacter(charname):
     db.session.commit()
     flash('Karaktären har raderats.')
     return redirect(url_for('user', nickname=g.user.nickname))
+
+@app.route('/lvlup/<charname>', methods=['GET','POST'])
+@login_required
+def lvlup(charname):
+    user = g.user
+    char = load_char(charname, user)
+    form = lvlupForm()
+    return render_template('lvlup.html',
+                           user=user,
+                           char=char,
+                           form=form)
+
+@app.route('/ding/<charname>', methods=['GET','POST'])
+@login_required
+def ding(charname):
+    if request.method == 'POST':
+        char = load_char(charname, g.user)
+        char.ding(request.form.get('levels', None),
+                  request.form.get('years', None))
+        c = g.user.characters.filter_by(name=charname).first()
+        c.start_values = str(char.start_values)
+        c.trace_buys = str(char.trace_buys)
+        c.points_left = char.points_left
+        c.traits = str(char.traits)
+        c.skills = str(char.skills)
+        c.hitpoints = str(char.hitpoints)
+        c.move_carry = str(char.move_carry)
+        db.session.commit()
+        flash('%s har dingat.' % char.start_values['Namn'])
+        return redirect(url_for('character', charname=char.name))
+    else:
+        flash('Get')
+        return redirect(url_for('index'))
 
 @app.route('/about')
 def about():
