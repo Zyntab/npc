@@ -216,6 +216,14 @@ def savecharacter():
         flash('Karaktären har sparats som "%s".' % c.name)
         return redirect(url_for('character', charname=c.name))
 
+@app.route('/confirm_delete/<charname>')
+@login_required
+def confirm_delete(charname):
+    return render_template('confirm_delete.html',
+                           title='Bekräfta',
+                           charname=charname,
+                           session=session)
+
 @app.route('/deletecharacter/<charname>', methods=['GET','POST'])
 @login_required
 def deletecharacter(charname):
