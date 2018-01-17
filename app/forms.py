@@ -73,3 +73,7 @@ class SaveCharForm(Form):
 class InviteForm(Form):
     invite_email = StringField(validators=[DataRequired(),
                                            Email(message='Det där var fel')])
+
+class lvlupForm(Form):
+    levels = IntegerField(default=0)
+    years = IntegerField(default=0)

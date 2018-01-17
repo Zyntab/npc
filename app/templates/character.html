@@ -5,7 +5,10 @@
 {% if g.user.is_authenticated %}
 	<div class="webOnly">
 		<form action="/savecharacter" method="POST">
-			<input type="submit" value="Spara" title="Spara">
+			<input type="submit" value="Spara" title="Spara"> 
+			{% if charname %}
+			<a href="{{ url_for('lvlup', charname=char.name) }}" title="Dinga">Dinga</a>
+			{% endif %}
 			{{ form.hidden_tag() }}
 			<fieldset>
 				<legend>Namn</legend>
@@ -117,7 +120,7 @@
 				Normal / 8 h: {{ char.move_carry['avrundat']['Normal / 8 h'] }} km<br>
 				Maximal förflyttning: {{ char.move_carry['avrundat']['Maximal förflyttning'] }} km<br>
 				Normal bärförmåga: {{ char.move_carry['avrundat']['Normal bärförmåga'] }} kg<br>
-				Maximal bärförmåga_ {{ char.move_carry['avrundat']['Maximal bärförmåga'] }}<br>
+				Maximal bärförmåga: {{ char.move_carry['avrundat']['Maximal bärförmåga'] }} kg<br>
 				</p>
 			</div><!--flytt-->
 			</div><!--row flytt-->
