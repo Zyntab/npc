@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Radera karaktär</h1>
+<p>Är du säker på att du vill radera <a href="{{ url_for('character', charname=charname) }}" title="{{ session['char']['start_values']['Namn'] }}">{{ session['char']['start_values']['Namn'] }}</a>?
+</p>
+<p>
+<a href="{{ url_for('character', charname=charname) }}"><button type="button" title="Ångra">Ångra</button></a> 
+<a href="{{ url_for('deletecharacter', charname=charname) }}"><button type="button" title="Radera">Radera</button></a>
+</p>
+
+{% endblock %}

@@ -26,7 +26,7 @@
 	</div>
 {% endif %}
 {% if charname %}
-<a class="webOnly" href="{{ url_for('deletecharacter', charname=charname) }}" title="Radera karaktär">Radera</a>
+<a class="webOnly" href="{{ url_for('confirm_delete', charname=charname) }}" title="Radera karaktär">Radera</a>
 {% endif %}
 <div class="printTableContainer">
 	<div id="top">
