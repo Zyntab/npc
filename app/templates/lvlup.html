@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Dinga {{ char.start_values['Namn'] }}</h1>
+<form action="/ding/{{ char.name }}" method="POST">
+{{ form.hidden_tag() }}
+<table>
+	<tr>
+		<td></td><td></td><td>Nuvarande</td>
+	</tr>
+	<tr>
+		<td>Hur många nivåer?</td><td>{{ form.levels }}</td><td>{{ char.start_values['Nivå'] }}</td>
+	</tr>
+	<tr>
+		<td>Hur många år äldre?</td><td>{{ form.years }}</td><td>{{ char.start_values['Ålder'] }}</td>
+	</tr>
+</table>
+<input type="submit" value="Dinga" title="Dinga">
+{% endblock %}
