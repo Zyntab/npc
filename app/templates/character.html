@@ -4,7 +4,7 @@
 {% block content %}
 {% if g.user.is_authenticated %}
 	<div class="webOnly">
-		<form action="/savecharacter" method="POST">
+		<form action="" method="POST">
 			{{ form.submit() }} 
 			{% if charname %}
 			<a href="{{ url_for('lvlup', charname=char.name) }}" title="Dinga">Dinga</a>

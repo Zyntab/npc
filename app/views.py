@@ -46,6 +46,11 @@ def character(charname=None):
             char = create_char(values)
             session['char'] = char.toDict()
             form.notes.data = session['char']['notes']
+            if form.validate_on_submit():
+                session['char']['start_values']['Namn'] = request.form.get('name',None)
+                session['char']['campaign'] = request.form.get('campaign',None)
+                session['char']['notes'] = request.form.get('notes',None)
+                return redirect(url_for('savecharacter'))
             return render_template('character.html',
                                    char=char,
                                    title=char.start_values['Namn'],
@@ -63,6 +68,11 @@ def character(charname=None):
                 char = load_char(charname, g.user)
                 session['char'] = char.toDict()
                 form.notes.data = session['char']['notes']
+                if form.validate_on_submit():
+                    session['char']['new_name'] = request.form.get('name',None)
+                    session['char']['campaign'] = request.form.get('campaign',None)
+                    session['char']['notes'] = request.form.get('notes',None)
+                    return redirect(url_for('savecharacter'))
                 return render_template('character.html',
                                        char=char,
                                        title=char.start_values['Namn'],
@@ -199,23 +209,18 @@ def invite():
 def savecharacter():
     ### skillnad om karaktären redan är sparad eller om den är ny ###
     if session['char']['name'] == '':  # inte tidigare sparad
-        session['char']['start_values']['Namn'] = request.form.get('name', None)
-        session['char']['campaign'] = request.form.get('campaign', None)
-        session['char']['notes'] = request.form.get('notes', None)
         char = save_char(session['char'], g.user)
         flash('Karaktären har sparats som "%s".' % char.name)
         return redirect(url_for('character', charname=char.name))
     else:  # tidigare sparad
         c = g.user.characters.filter_by(name=session['char']['name']).first()
-        if request.form.get('name', None) != session['char']['start_values']['Namn']:
+        if session['char']['new_name'] != session['char']['start_values']['Namn']:
             start_values = ast.literal_eval(c.start_values)
-            start_values['Namn'] = request.form.get('name', None)
+            start_values['Namn'] = session['char']['new_name']
             c.start_values = str(start_values)
             c.name = unique_charname(start_values['Namn'].split()[0], g.user)
-        if request.form.get('campaign', None) != session['char']['campaign']:
-            c.campaign = request.form.get('campaign', None)
-        if request.form.get('notes', None) != session['char']['notes']:
-            c.notes = request.form.get('notes', None)
+        c.campaign = session['char']['campaign']
+        c.notes = session['char']['notes']
         db.session.commit()
         flash('Karaktären har sparats som "%s".' % c.name)
         return redirect(url_for('character', charname=c.name))
