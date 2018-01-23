@@ -91,8 +91,8 @@ class SaveCharForm(FlaskForm):
     submit = SubmitField('Spara')
 
 class InviteForm(FlaskForm):
-    invite_email = StringField(validators=[DataRequired(),
-                                           Email(message='Det där var fel')])
+    invite_email = StringField(validators=[DataRequired(message='Du måste skriva in en adress'),
+                                           Email(message='Det verkar inte vara en mailaddress')])
 
 class lvlupForm(FlaskForm):
     levels = IntegerField(default=0)
