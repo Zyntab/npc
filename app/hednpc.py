@@ -129,7 +129,6 @@ def create_char(values):
     return Npc(start_values, weights, char_traits, points)
 
 def load_char(charname, user):
-    ### ast.literal_eval ###
     c = user.characters.filter_by(name=charname).first()
     lit_eval = ast.literal_eval
     values = {'id':c.id,

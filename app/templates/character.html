@@ -4,8 +4,8 @@
 {% block content %}
 {% if g.user.is_authenticated %}
 	<div class="webOnly">
-		<form action="/savecharacter" method="POST">
-			<input type="submit" value="Spara" title="Spara"> 
+		<form action="" method="POST">
+			{{ form.submit() }} 
 			{% if charname %}
 			<a href="{{ url_for('lvlup', charname=char.name) }}" title="Dinga">Dinga</a>
 			{% endif %}
@@ -13,6 +13,9 @@
 			<fieldset>
 				<legend>Namn</legend>
 				{{ form.name(value=char.start_values['Namn']) }}
+				{% for error in form.name.errors %}
+				<br><span class="error">[{{ error }}]</span>
+				{% endfor %}
 			</fieldset>
 			<fieldset>
 				<legend>Kampanj</legend>

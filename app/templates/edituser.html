@@ -10,9 +10,15 @@
 				<td>Nytt användarnamn:</td>
 				<td>{{ form.nickname(size=24) }}</td>
 			</tr>
+			{% for error in form.nickname.errors %}
 			<tr>
 				<td></td>
-				<td><input type="submit" value="Spara" title="Spara"></td>
+				<td><span class="error">[{{ error }}]</span></td>
+			</tr>
+			{% endfor %}
+			<tr>
+				<td></td>
+				<td>{{ form.submit() }}</td>
 			</tr>
 		</table>
 	</form>

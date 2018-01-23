@@ -15,33 +15,42 @@ from config import ADMINS
 def index():
     user = g.user
     form = CharacterForm()
-    return render_template('index.html',
-                           title='Hem',
-                           user=user,
-                           form=form)
+    if form.validate_on_submit():
+        session['create_values'] = request.form
+        return redirect(url_for('character'))
+    else:
+        return render_template('index.html',
+                               title='Hem',
+                               user=user,
+                               form=form)
 
 @app.route('/character', methods=['GET','POST'])
 @app.route('/character/<charname>', methods=['GET','POST'])
 def character(charname=None):
     form = SaveCharForm()
     if not charname:
-        if request.method == 'POST':
-            values = {'Namn':request.form.get('name', None),
-                      'Yrke':request.form.get('job', None),
-                      'nivå_min':request.form.get('lvl_min', None),
-                      'nivå_max':request.form.get('lvl_max', None),
-                      'Ras':request.form.get('race', None),
-                      'Kön':request.form.get('gender', None),
-                      'Ålder':request.form.get('age', None),
-                      'ålder_min':request.form.get('age_min', None),
-                      'ålder_max':request.form.get('age_max', None),
-                      'Längd':request.form.get('height', None),
-                      'längd_min':request.form.get('height_min', None),
-                      'längd_max':request.form.get('height_max', None),
-                      'Huvudhand':request.form.get('hand', None)}
+        if session['create_values']:
+            values = {'Namn':session['create_values']['name'],
+                      'Yrke':session['create_values']['job'],
+                      'nivå_min':session['create_values']['lvl_min'],
+                      'nivå_max':session['create_values']['lvl_max'],
+                      'Ras':session['create_values']['race'],
+                      'Kön':session['create_values']['gender'],
+                      'Ålder':session['create_values']['age'],
+                      'ålder_min':session['create_values']['age_min'],
+                      'ålder_max':session['create_values']['age_max'],
+                      'Längd':session['create_values']['height'],
+                      'längd_min':session['create_values']['height_min'],
+                      'längd_max':session['create_values']['height_max'],
+                      'Huvudhand':session['create_values']['hand']}
             char = create_char(values)
             session['char'] = char.toDict()
             form.notes.data = session['char']['notes']
+            if form.validate_on_submit():
+                session['char']['start_values']['Namn'] = request.form.get('name',None)
+                session['char']['campaign'] = request.form.get('campaign',None)
+                session['char']['notes'] = request.form.get('notes',None)
+                return redirect(url_for('savecharacter'))
             return render_template('character.html',
                                    char=char,
                                    title=char.start_values['Namn'],
@@ -59,6 +68,11 @@ def character(charname=None):
                 char = load_char(charname, g.user)
                 session['char'] = char.toDict()
                 form.notes.data = session['char']['notes']
+                if form.validate_on_submit():
+                    session['char']['new_name'] = request.form.get('name',None)
+                    session['char']['campaign'] = request.form.get('campaign',None)
+                    session['char']['notes'] = request.form.get('notes',None)
+                    return redirect(url_for('savecharacter'))
                 return render_template('character.html',
                                        char=char,
                                        title=char.start_values['Namn'],
@@ -168,7 +182,7 @@ def edituser():
         db.session.add(g.user)
         db.session.commit()
         flash('Ditt användarnamn har ändrats')
-        return redirect(url_for('edituser'))
+        return redirect(url_for('user', nickname=g.user.nickname))
     else:
         form.nickname.data = g.user.nickname
     return render_template('edituser.html',
@@ -195,23 +209,18 @@ def invite():
 def savecharacter():
     ### skillnad om karaktären redan är sparad eller om den är ny ###
     if session['char']['name'] == '':  # inte tidigare sparad
-        session['char']['start_values']['Namn'] = request.form.get('name', None)
-        session['char']['campaign'] = request.form.get('campaign', None)
-        session['char']['notes'] = request.form.get('notes', None)
         char = save_char(session['char'], g.user)
         flash('Karaktären har sparats som "%s".' % char.name)
         return redirect(url_for('character', charname=char.name))
     else:  # tidigare sparad
         c = g.user.characters.filter_by(name=session['char']['name']).first()
-        if request.form.get('name', None) != session['char']['start_values']['Namn']:
+        if session['char']['new_name'] != session['char']['start_values']['Namn']:
             start_values = ast.literal_eval(c.start_values)
-            start_values['Namn'] = request.form.get('name', None)
+            start_values['Namn'] = session['char']['new_name']
             c.start_values = str(start_values)
             c.name = unique_charname(start_values['Namn'].split()[0], g.user)
-        if request.form.get('campaign', None) != session['char']['campaign']:
-            c.campaign = request.form.get('campaign', None)
-        if request.form.get('notes', None) != session['char']['notes']:
-            c.notes = request.form.get('notes', None)
+        c.campaign = session['char']['campaign']
+        c.notes = session['char']['notes']
         db.session.commit()
         flash('Karaktären har sparats som "%s".' % c.name)
         return redirect(url_for('character', charname=c.name))
@@ -239,33 +248,34 @@ def lvlup(charname):
     user = g.user
     char = load_char(charname, user)
     form = lvlupForm()
+    if form.validate_on_submit():
+        levels = request.form.get('levels',None)
+        years = request.form.get('years',None)
+        token = '%s-%s-%s' % (charname, levels, years)
+        return redirect(url_for('ding', dingtoken=token))
     return render_template('lvlup.html',
                            title='Dinga %s' % (char.start_values['Namn']),
                            user=user,
                            char=char,
                            form=form)
 
-@app.route('/ding/<charname>', methods=['GET','POST'])
+@app.route('/ding/<dingtoken>', methods=['GET','POST'])
 @login_required
-def ding(charname):
-    if request.method == 'POST':
-        char = load_char(charname, g.user)
-        char.ding(request.form.get('levels', None),
-                  request.form.get('years', None))
-        c = g.user.characters.filter_by(name=charname).first()
-        c.start_values = str(char.start_values)
-        c.trace_buys = str(char.trace_buys)
-        c.points_left = char.points_left
-        c.traits = str(char.traits)
-        c.skills = str(char.skills)
-        c.hitpoints = str(char.hitpoints)
-        c.move_carry = str(char.move_carry)
-        db.session.commit()
-        flash('%s har dingat.' % char.start_values['Namn'])
-        return redirect(url_for('character', charname=char.name))
-    else:
-        flash('Get')
-        return redirect(url_for('index'))
+def ding(dingtoken):
+    charname, levels, years = dingtoken.split('-')
+    char = load_char(charname, g.user)
+    char.ding(levels, years)
+    c = g.user.characters.filter_by(name=charname).first()
+    c.start_values = str(char.start_values)
+    c.trace_buys = str(char.trace_buys)
+    c.points_left = char.points_left
+    c.traits = str(char.traits)
+    c.skills = str(char.skills)
+    c.hitpoints = str(char.hitpoints)
+    c.move_carry = str(char.move_carry)
+    db.session.commit()
+    flash('%s har dingat.' % char.start_values['Namn'])
+    return redirect(url_for('character', charname=char.name))
 
 @app.route('/about')
 def about():

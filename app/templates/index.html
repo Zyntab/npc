@@ -7,15 +7,17 @@
 		för att sedan skapa en karaktär enligt alla regler för
 		karaktärsskapande.
 		</p>
-		<form action="/character" name="character" method="POST">
+		<form action="" name="character" method="POST">
 			{{ form.hidden_tag() }}
 			<p>
-				<input type="submit" value="Skapa karaktär" title="Skapa karaktär">
+				{{ form.submit() }}
 			</p>
 			<fieldset>
 				<legend>Namn</legend>
 				{{ form.name }}
-				<!--<input type="text" name="Namn" value="*slump*">-->
+				{% for error in form.name.errors %}
+				<br><span class="error">[{{ error }}]</span>
+				{% endfor %}
 			</fieldset>
 			<fieldset>
 				<legend>Yrke</legend>
@@ -35,6 +37,12 @@
 					<label for="nivå_max">max: 
 					{{ form.lvl_max }}
 					</label>
+					{% for error in form.lvl_min.errors %}
+						<br><span class="error">[{{ error }}]</span>
+					{% endfor %}
+					{% for error in form.lvl_max.errors %}
+						<br><span class="error">[{{ error }}]</span>
+					{% endfor %}
 			</fieldset>
 			<fieldset>
 				<legend>Ras</legend>
@@ -57,6 +65,15 @@
 					{% endif %}
 				{% endfor %}
 				Min:{{ form.age_min }} Max:{{ form.age_max }}
+				{% for error in form.age.errors %}
+					<br><span class="error">[{{ error }}]</span>
+				{% endfor %}
+				{% for error in form.age_min.errors %}
+					<br><span class="error">[{{ error }}]</span>
+				{% endfor %}
+				{% for error in form.age_max.errors %}
+					<br><span class="error">[{{ error }}]</span>
+				{% endfor %}
 		</fieldset>
 		<fieldset>
 			<legend>Längd</legend>
@@ -67,6 +84,15 @@
 				{% endif %}
 			{% endfor %}
 			Min:{{ form.height_min }} Max:{{ form.height_max }}
+			{% for error in form.height.errors %}
+				<br><span class="error">[{{ error }}]</span>
+			{% endfor %}
+			{% for error in form.height_min.errors %}
+				<br><span class="error">[{{ error }}]</span>
+			{% endfor %}
+			{% for error in form.height_max.errors %}
+				<br><span class="error">[{{ error }}]</span>
+			{% endfor %}
 		</fieldset>
 		<fieldset>
 			<legend>Huvudhand</legend>

@@ -69,7 +69,7 @@ label {
 	width: 250px;
 }
 
-#lvl_min, #lvl_max, #age_min, #age_max, #height_min, #height_max {
+#lvl_min, #lvl_max, #age_min, #age_max, #height_min, #height_max, #levels, #years {
 	width: 25px;
 }
 
@@ -80,4 +80,8 @@ label {
 
 .printOnly {
 	display: none;
+}
+
+.error {
+	color: red;
 }
