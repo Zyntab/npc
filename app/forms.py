@@ -1,25 +1,51 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, TextAreaField, RadioField
-from wtforms import IntegerField
-from wtforms.validators import DataRequired, Length, Email
+from wtforms import IntegerField, SubmitField
+from wtforms.validators import DataRequired, Length, Email, NumberRange, ValidationError
 
-class LoginForm(Form):
+def checkMaxLvl(form, field):
+    try:
+        if field.data < form.lvl_min.data:
+            raise ValidationError('Max får inte vara mindre än min')
+    except:
+        pass
+
+def checkAge(form, field):
+    if field.data == 'rng':
+        if form.age_min.data > form.age_max.data:
+            raise ValidationError('Max får inte vara mindre än min')
+
+def checkHeight(form, field):
+    if field.data == 'rng':
+        if form.height_min.data > form.height_max.data:
+            raise ValidationError('Max får inte vara mindre än min')
+
+class LoginForm(FlaskForm):
     remember_me = BooleanField('remember_me', default=False)
 
-class EditForm(Form):
-    nickname = StringField('nickname', validators=[DataRequired()])
+class EditForm(FlaskForm):
+    nickname = StringField('nickname',
+                           validators=[DataRequired(message='Får inte vara tomt')])
+    submit = SubmitField('Spara')
 
-class CreateUserForm(Form):
+class CreateUserForm(FlaskForm):
     remember_me = BooleanField('remember_me', default=False)
 
-class CharacterForm(Form):
-    name = StringField('Namn', default='*slump*')
+class CharacterForm(FlaskForm):
+    name = StringField('Namn',
+                       default='*slump*',
+                       validators=[DataRequired(message='Får inte vara tomt')])
     job = RadioField('Yrke', choices=[('Vanlig','Vanlig'),
                                       ('Stridis','Stridis'),
                                       ('Tänkare','Tänkare')],
                      default='Vanlig')
-    lvl_min = IntegerField(default=1)
-    lvl_max = IntegerField(default=3)
+    lvl_min = IntegerField(default=1,
+                           validators=[NumberRange(min=1,
+                                                   message='Min måste vara minst 1')])
+    lvl_max = IntegerField(default=3,
+                           validators=[NumberRange(min=1,
+                                                   message='Max måste vara minst 1'),
+                                       checkMaxLvl])
     race = RadioField('Ras',
                       choices=[('Människa','Människa'),
                                ('Gôr','Gôr')],
@@ -36,7 +62,8 @@ class CharacterForm(Form):
                               ('Gammal','Gammal'),
                               ('Åldring','Åldring'),
                               ('rng','')],
-                     default='Mogen')
+                     default='Mogen',
+                     validators=[checkAge])
     age_min = IntegerField(default=25)
     age_max = IntegerField(default=50)
     height = RadioField('Längd',
@@ -44,7 +71,8 @@ class CharacterForm(Form):
                                  ('Medel','Medel'),
                                  ('Lång','Lång'),
                                  ('rng','')],
-                        default='Medel')
+                        default='Medel',
+                        validators=[checkHeight])
     height_min = IntegerField(default=160)
     height_max = IntegerField(default=180)
     hand = RadioField('Huvudhand',
@@ -53,27 +81,19 @@ class CharacterForm(Form):
                                ('Vänsterhänt','Vänsterhänt'),
                                ('Dubbelhänt','Dubbelhänt')],
                       default='slump')
+    submit = SubmitField('Skapa karaktär')
 
-    def validate(self):
-        rv = Form.validate(self)
-        if not rv:
-            return False
-        if self.age.data == 'rng':
-            if int(self.age_min.data) > int(self.age_max.data):
-                raise ValidationError(message='Max ålder måste vara större än eller lika med Min ålder.')
-        if self.height.data == 'rng':
-            if int(self.height_min.data) > int(self.height_max.data):
-                   raise ValidationError(message='Max längd måste vara större än eller lika med Min längd.')
-
-class SaveCharForm(Form):
-    name = StringField('Namn', validators=[DataRequired()])
-    notes = TextAreaField('Anteckningar', validators=[DataRequired()])
+class SaveCharForm(FlaskForm):
+    name = StringField('Namn',
+                       validators=[DataRequired(message='Får inte vara tomt')])
+    notes = TextAreaField('Anteckningar')
     campaign = StringField('Kampanj')
+    submit = SubmitField('Spara')
 
-class InviteForm(Form):
+class InviteForm(FlaskForm):
     invite_email = StringField(validators=[DataRequired(),
                                            Email(message='Det där var fel')])
 
-class lvlupForm(Form):
+class lvlupForm(FlaskForm):
     levels = IntegerField(default=0)
     years = IntegerField(default=0)

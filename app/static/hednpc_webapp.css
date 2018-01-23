@@ -81,3 +81,7 @@ label {
 .printOnly {
 	display: none;
 }
+
+.error {
+	color: red;
+}

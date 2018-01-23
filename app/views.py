@@ -15,30 +15,34 @@ from config import ADMINS
 def index():
     user = g.user
     form = CharacterForm()
-    return render_template('index.html',
-                           title='Hem',
-                           user=user,
-                           form=form)
+    if form.validate_on_submit():
+        session['create_values'] = request.form
+        return redirect(url_for('character'))
+    else:
+        return render_template('index.html',
+                               title='Hem',
+                               user=user,
+                               form=form)
 
 @app.route('/character', methods=['GET','POST'])
 @app.route('/character/<charname>', methods=['GET','POST'])
 def character(charname=None):
     form = SaveCharForm()
     if not charname:
-        if request.method == 'POST':
-            values = {'Namn':request.form.get('name', None),
-                      'Yrke':request.form.get('job', None),
-                      'nivå_min':request.form.get('lvl_min', None),
-                      'nivå_max':request.form.get('lvl_max', None),
-                      'Ras':request.form.get('race', None),
-                      'Kön':request.form.get('gender', None),
-                      'Ålder':request.form.get('age', None),
-                      'ålder_min':request.form.get('age_min', None),
-                      'ålder_max':request.form.get('age_max', None),
-                      'Längd':request.form.get('height', None),
-                      'längd_min':request.form.get('height_min', None),
-                      'längd_max':request.form.get('height_max', None),
-                      'Huvudhand':request.form.get('hand', None)}
+        if session['create_values']:
+            values = {'Namn':session['create_values']['name'],
+                      'Yrke':session['create_values']['job'],
+                      'nivå_min':session['create_values']['lvl_min'],
+                      'nivå_max':session['create_values']['lvl_max'],
+                      'Ras':session['create_values']['race'],
+                      'Kön':session['create_values']['gender'],
+                      'Ålder':session['create_values']['age'],
+                      'ålder_min':session['create_values']['age_min'],
+                      'ålder_max':session['create_values']['age_max'],
+                      'Längd':session['create_values']['height'],
+                      'längd_min':session['create_values']['height_min'],
+                      'längd_max':session['create_values']['height_max'],
+                      'Huvudhand':session['create_values']['hand']}
             char = create_char(values)
             session['char'] = char.toDict()
             form.notes.data = session['char']['notes']
@@ -168,7 +172,7 @@ def edituser():
         db.session.add(g.user)
         db.session.commit()
         flash('Ditt användarnamn har ändrats')
-        return redirect(url_for('edituser'))
+        return redirect(url_for('user', nickname=g.user.nickname))
     else:
         form.nickname.data = g.user.nickname
     return render_template('edituser.html',
