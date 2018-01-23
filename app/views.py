@@ -248,33 +248,34 @@ def lvlup(charname):
     user = g.user
     char = load_char(charname, user)
     form = lvlupForm()
+    if form.validate_on_submit():
+        levels = request.form.get('levels',None)
+        years = request.form.get('years',None)
+        token = '%s-%s-%s' % (charname, levels, years)
+        return redirect(url_for('ding', dingtoken=token))
     return render_template('lvlup.html',
                            title='Dinga %s' % (char.start_values['Namn']),
                            user=user,
                            char=char,
                            form=form)
 
-@app.route('/ding/<charname>', methods=['GET','POST'])
+@app.route('/ding/<dingtoken>', methods=['GET','POST'])
 @login_required
-def ding(charname):
-    if request.method == 'POST':
-        char = load_char(charname, g.user)
-        char.ding(request.form.get('levels', None),
-                  request.form.get('years', None))
-        c = g.user.characters.filter_by(name=charname).first()
-        c.start_values = str(char.start_values)
-        c.trace_buys = str(char.trace_buys)
-        c.points_left = char.points_left
-        c.traits = str(char.traits)
-        c.skills = str(char.skills)
-        c.hitpoints = str(char.hitpoints)
-        c.move_carry = str(char.move_carry)
-        db.session.commit()
-        flash('%s har dingat.' % char.start_values['Namn'])
-        return redirect(url_for('character', charname=char.name))
-    else:
-        flash('Get')
-        return redirect(url_for('index'))
+def ding(dingtoken):
+    charname, levels, years = dingtoken.split('-')
+    char = load_char(charname, g.user)
+    char.ding(levels, years)
+    c = g.user.characters.filter_by(name=charname).first()
+    c.start_values = str(char.start_values)
+    c.trace_buys = str(char.trace_buys)
+    c.points_left = char.points_left
+    c.traits = str(char.traits)
+    c.skills = str(char.skills)
+    c.hitpoints = str(char.hitpoints)
+    c.move_carry = str(char.move_carry)
+    db.session.commit()
+    flash('%s har dingat.' % char.start_values['Namn'])
+    return redirect(url_for('character', charname=char.name))
 
 @app.route('/about')
 def about():

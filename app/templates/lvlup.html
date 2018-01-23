@@ -2,18 +2,26 @@
 
 {% block content %}
 <h1>Dinga {{ char.start_values['Namn'] }}</h1>
-<form action="/ding/{{ char.name }}" method="POST">
+<form action="" method="POST">
 {{ form.hidden_tag() }}
 <table>
 	<tr>
 		<td></td><td></td><td>Nuvarande</td>
 	</tr>
 	<tr>
-		<td>Hur många nivåer?</td><td>{{ form.levels }}</td><td>{{ char.start_values['Nivå'] }}</td>
+		<td>Hur många nivåer?</td>
+		<td>{{ form.levels }}</td>
+		<td>{{ char.start_values['Nivå'] }}</td>
 	</tr>
+	{% for error in form.levels.errors %}
+		<tr><td><span class="error">[{{ error }}]</span></td></tr>
+	{% endfor %}
 	<tr>
 		<td>Hur många år äldre?</td><td>{{ form.years }}</td><td>{{ char.start_values['Ålder'] }}</td>
 	</tr>
+	{% for error in form.years.errors %}
+		<tr><td><span class="error">[{{ error }}]</span></td></tr>
+	{% endfor %}
 </table>
 <input type="submit" value="Dinga" title="Dinga">
 {% endblock %}

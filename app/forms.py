@@ -20,6 +20,10 @@ def checkHeight(form, field):
         if form.height_min.data > form.height_max.data:
             raise ValidationError('Max får inte vara mindre än min')
 
+def checkPositive(form, field):
+    if field.data < 2:
+        raise ValidationError('Får inte vara mindre än 2')
+
 class LoginForm(FlaskForm):
     remember_me = BooleanField('remember_me', default=False)
 
@@ -64,8 +68,10 @@ class CharacterForm(FlaskForm):
                               ('rng','')],
                      default='Mogen',
                      validators=[checkAge])
-    age_min = IntegerField(default=25)
-    age_max = IntegerField(default=50)
+    age_min = IntegerField(default=25, validators=[NumberRange(min=1,
+                                                               message='Måste vara minst 1')])
+    age_max = IntegerField(default=50, validators=[NumberRange(min=1,
+                                                               message='Måste vara minst 1')])
     height = RadioField('Längd',
                         choices=[('Kort','Kort'),
                                  ('Medel','Medel'),
@@ -73,8 +79,10 @@ class CharacterForm(FlaskForm):
                                  ('rng','')],
                         default='Medel',
                         validators=[checkHeight])
-    height_min = IntegerField(default=160)
-    height_max = IntegerField(default=180)
+    height_min = IntegerField(default=160, validators=[NumberRange(min=1,
+                                                                   message='Måste vara minst 1')])
+    height_max = IntegerField(default=180, validators=[NumberRange(min=1,
+                                                                   message='Måste vara minst 1')])
     hand = RadioField('Huvudhand',
                       choices=[('slump','*slumpa*'),
                                ('Högerhänt','Högerhänt'),
@@ -95,5 +103,9 @@ class InviteForm(FlaskForm):
                                            Email(message='Det verkar inte vara en mailaddress')])
 
 class lvlupForm(FlaskForm):
-    levels = IntegerField(default=0)
-    years = IntegerField(default=0)
+    levels = IntegerField(default=0,
+                          validators=[NumberRange(min=0,
+                                                  message='Får inte vara mindre än 0')])
+    years = IntegerField(default=0,
+                         validators=[NumberRange(min=0,
+                                                 message='Får inte vara mindre än 0')])
