@@ -6,12 +6,12 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 WTF_CSRF_ENABLED = True
-SECRET_KEY = os.environ.get('SECRET_KEY') or 'jättehemlig'
+SECRET_KEY = os.environ['SECRET_KEY'] or 'jättehemlig'
 
 OAUTH_CREDENTIALS = {
     'facebook': {
-        'id': os.environ.get('FACEBOOK_ID'),
-        'secret': os.environ.get('FACEBOOK_SECRET')
+        'id': os.environ['FACEBOOK_ID'],
+        'secret': os.environ['FACEBOOK_SECRET']
         },
     'twitter': {}
     }
@@ -21,8 +21,8 @@ MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 465
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
-MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+MAIL_USERNAME = os.environ['MAIL_USERNAME']
+MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
 
 # administrator list
 ADMINS = ['npc.zyntabsoft@gmail.com',
