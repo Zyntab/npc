@@ -3,18 +3,37 @@
 
 {% block content %}
 	<h1>Logga in</h1>
-	<form action="" method="post" name="login">
+	<form action="" method="post">
 		{{ form.hidden_tag() }}
-		<p> {{ form.remember_me }} Kom ihåg mig</p>
-		<p><a href="{{ url_for('oauth_authorize', provider='facebook') }}">
-				<img id="FBlogin" 
-							src="{{ url_for('static', filename='images/loggainmedfacebook.jpeg') }}"
-							title="Logga in med facebook"></a></p>
+		<fieldset>
+			<legend>Logga in</legend>
+			<p>
+				{{ form.nickname.label}}<br>
+				{{ form.nickname }}<br>
+				{% for error in form.nickname.errors %}
+					<span class="error">[{{ error }}]</span>
+				{% endfor %}
+			</p>
+			<p>
+				{{ form.password.label }}<br>
+				{{ form.password }}<br>
+				{% for error in form.password.errors %}
+					<span class="error">[{{ error }}]</span>
+				{% endfor %}
+			</p>
+			<p>
+				{{ form.remember_me.label }}<br>
+				{{ form.remember_me }}
+			</p>
+			<p>
+				{{ form.submit() }}
+			</p>
+		</fieldset>
 	</form>
-	<h2>Fel som kan uppstå</h2>
 	<p>
-		När man vill logga in kan det hända att det uppstår ett okänt fel. <br>
-		Ofta funkar det att gå tillbaka till den här sidan och försöka igen.<br>
-		Jag har ingen aning om vad som orsakar detta.
+		Glömt lösenordet? Klicka för att 
+		<a href="{{ url_for('reset_password_request') }}" title="Återställ lösenord">
+			återställa lösenord</a>.
+		</a>
 	</p>
 {% endblock %}

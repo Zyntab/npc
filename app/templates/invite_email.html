@@ -6,11 +6,14 @@ inte bara att skapa en karaktär utan även spara och dinga dina karaktärer!
 </p>
 <p>
 Använd nedanstående länk för att skapa ditt konto:<br>
-<a href="{{ create_url }}" title="Skapa konto">Skapa konto</a>
+<a href="{{ url_for('register', token=token, _external=True) }}" title="Skapa konto">Skapa konto</a>
 </p>
 <p>
-Nästa gång du vill logga in efter att ditt konto är skapat använder du denna:<br>
-<a href="{{ index_url }}" title="NPC-skaparen">Logga in</a>
+    Alternativt kan du klistra in följande länk i adressfältet i din webläsare:<br>
+    {{ url_for('register', token=token, _external=True) }} <br>
+</p>
+<p>
+    Denna inbjudan är giltig i en vecka.
 </p>
 <p>
 Med vänlig hälsning<br><br>

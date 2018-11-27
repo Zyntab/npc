@@ -8,14 +8,6 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 WTF_CSRF_ENABLED = True
 SECRET_KEY = os.environ['SECRET_KEY'] or 'jättehemlig'
 
-OAUTH_CREDENTIALS = {
-    'facebook': {
-        'id': os.environ['FACEBOOK_ID'],
-        'secret': os.environ['FACEBOOK_SECRET']
-        },
-    'twitter': {}
-    }
-
 # mail server settings
 MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 465

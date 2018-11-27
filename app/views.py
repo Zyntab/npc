@@ -1,13 +1,16 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
-from app import app, db, lm, oid
-from .forms import LoginForm, EditForm, CharacterForm, InviteForm, SaveCharForm, lvlupForm
-from .models import User, OAuthSignIn, UserTokens
+from app import app, db, lm
+from .forms import LoginForm, EditForm, CharacterForm, InviteForm, \
+    SaveCharForm, lvlupForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
+from .models import User, UserTokens
 import ast
 from .hednpc import create_char, load_char, save_char, unique_charname
 import app.traits as traits
-from .emails import invite_user
+from .emails import invite_user, send_password_reset_email
 from config import ADMINS
+from werkzeug.urls import url_parse
+import jwt
 
 
 @app.route('/', methods=['GET','POST'])
@@ -23,6 +26,29 @@ def index():
                                title='Hem',
                                user=user,
                                form=form)
+
+@app.route('/register/<token>', methods=['GET', 'POST'])
+def register(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    try:
+        invite_email = jwt.decode(token, app.config['SECRET_KEY'],
+                        algorithm='HS256')['invite_email']
+    except:
+        flash('Ogiltig länk. Har det gått mer än en vecka sedan du fick inbjudan?')
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    form.email.data = invite_email
+    if form.validate_on_submit():
+        user = User(nickname=form.nickname.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Grattis! Du är nu registrerad som användare.')
+        return redirect(url_for('login'))
+    return render_template('register.html',
+                           title='Skapa konto',
+                           form=form)
 
 @app.route('/character', methods=['GET','POST'])
 @app.route('/character/<charname>', methods=['GET','POST'])
@@ -87,65 +113,60 @@ def character(charname=None):
             return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])
-@app.route('/login/<token>', methods=['GET', 'POST'])
-@oid.loginhandler
-def login(token=None):
-    if g.user is not None and g.user.is_authenticated:
+def login():
+    if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
-    session['token'] = token
     if form.validate_on_submit():
-        session['remember_me'] = form.remember_me.data
-        return redirect(url_for('oauth_authorize',
-                                provider = 'facebook'))
+        user = User.query.filter_by(nickname=form.nickname.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Felaktigt användarnamn eller lösenord.')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index')
+        return redirect(next_page)
     return render_template('login.html',
                            title='Logga in',
+                           form=form)
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Kolla din mail för instruktioner om hur du återställer ditt lösenord.')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Återställ lösenord',
+                           form=form)
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        flash('Ogiltig länk. Har det gått mer än 10 minuter? ')
+        return redirect(url_for('login'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Ditt lösenord har ändrats.')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html',
+                           title='Återställ lösenord',
                            form=form)
 
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
-@app.route('/authorize/<provider>')
-def oauth_authorize(provider):
-    if not current_user.is_anonymous:
-        return redirect(url_for('index'))
-    oauth = OAuthSignIn.get_provider(provider)
-    return oauth.authorize()
-
-@app.route('/callback/<provider>')
-def oauth_callback(provider):
-    if not current_user.is_anonymous:
-        return redirect(url_for('index'))
-    oauth = OAuthSignIn.get_provider(provider)
-    social_id, username, email = oauth.callback()
-    if social_id is None:
-        flash('Authentication failed.')
-        return redirect(url_for('index'))
-    user = User.query.filter_by(social_id=social_id).first()
-    if not user:
-        if session['token']:
-            tokensDB = UserTokens.query.all()
-            invited = False
-            for t in tokensDB:
-                if t.token_string == session['token']:
-                    invited = True
-                    user = User(social_id=social_id, nickname=username, email=email)
-                    db.session.add(user)
-                    db.session.delete(t)
-                    db.session.commit()
-                    session.pop('token', None)
-            if not invited:
-                flash('Din inbjudan verkar vara ogiltig.')
-                return redirect(url_for('index'))
-            else:
-                invited = False
-        else:
-            flash('Du måste ha en inbjudan för att kunna logga in.')
-            return redirect(url_for('index'))
-    login_user(user, True)
-    flash('Inloggad')
-    return redirect(request.args.get('next') or url_for('index'))
 
 @app.before_request
 def before_request():
@@ -167,11 +188,14 @@ def user(nickname):
         flash('Användare %s hittades inte.' % nickname)
         return redirect(url_for('index'))
     chars = user.characters.order_by('timestamp').all()
+    if user.email in app.config['ADMINS']:
+        is_admin = True
     return render_template('user.html',
                            title = 'Profil',
                            user=user,
                            chars=chars,
-                           lit_eval=ast.literal_eval)
+                           lit_eval=ast.literal_eval,
+                           is_admin=is_admin)
 
 @app.route('/edituser', methods=['GET', 'POST'])
 @login_required

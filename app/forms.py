@@ -1,7 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, TextAreaField, RadioField
+from wtforms import StringField, BooleanField, TextAreaField, RadioField, PasswordField
 from wtforms import IntegerField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, NumberRange, ValidationError
+from wtforms.validators import DataRequired, Length, Email, \
+    NumberRange, ValidationError, EqualTo
+import jwt
+from app import app
 
 def checkMaxLvl(form, field):
     try:
@@ -24,8 +27,27 @@ def checkPositive(form, field):
     if field.data < 2:
         raise ValidationError('Får inte vara mindre än 2')
 
+class RegistrationForm(FlaskForm):
+    nickname = StringField('Användarnamn', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Lösenord', validators=[DataRequired()])
+    password2 = PasswordField('Lösenord igen', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Registrera')
+
+#    def validate_email(self, token):
+#        invite_email = jwt.decode(token, app.config['SECRET_KEY'],
+#                                  algorithms=['HS256'])['invite_email']
+#        if invite_email != self.email.data:
+#            raise ValidationError('Du måste använda samma email som inbjudan skickades till.')
+
+
 class LoginForm(FlaskForm):
-    remember_me = BooleanField('remember_me', default=False)
+    nickname = StringField('Användarnamn', 
+                           validators=[DataRequired(message='Får inte vara tomt')])
+    password = PasswordField('Lösenord', 
+                             validators=[DataRequired(message='Får inte vara tomt')])
+    remember_me = BooleanField('Kom ihåg mig', default=False)
+    submit = SubmitField('Logga in')
 
 class EditForm(FlaskForm):
     nickname = StringField('nickname',
@@ -109,3 +131,13 @@ class lvlupForm(FlaskForm):
     years = IntegerField(default=0,
                          validators=[NumberRange(min=0,
                                                  message='Får inte vara mindre än 0')])
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Skicka')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Lösenord', validators=[DataRequired()])
+    password2 = PasswordField('Lösenord igen', validators=[DataRequired(),
+                                                           EqualTo('password')])
+    submit = SubmitField('Ändra lösenordet')

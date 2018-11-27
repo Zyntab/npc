@@ -3,10 +3,9 @@ När du har ett konto får du tillgång till alla funktioner,
 inte bara att skapa en karaktär utan även spara och dinga!
 
 Använd nedanstående länk för att skapa ditt konto:
-{{ create_url }}
+{{ url_for('register', token=token, _external=True) }}
 
-Nästa gång du vill logga in efter att ditt konto är skapat använer du denna:
-{{ index_url }}
+Denna inbjudan är giltig i en vecka.
 
 Med vänlig hälsning
 

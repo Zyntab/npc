@@ -1,21 +1,41 @@
-from app import db
+from app import db, app
 import ast
 from flask_login import UserMixin
 from flask import url_for, current_app, request, redirect, session
-from rauth import OAuth2Service
-from config import OAUTH_CREDENTIALS
-import json
+from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
+from time import time
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    social_id = db.Column(db.String(64), unique=True)
     nickname = db.Column(db.String(64), index=True)
     email = db.Column(db.String(120), index=True, unique=True)
     user_type = db.Column(db.String(5), index=True)
+    password_hash = db.Column(db.String(128))
     characters = db.relationship('Character', backref='creator', lazy='dynamic')
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+    
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+    
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithm='HS256')['reset_password']
+        except:
+            return
+        return User.query.get(id)
 
 class UserTokens(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -54,74 +74,4 @@ class Character(db.Model):
                 break
             version += 1
         return new_charname
-
-class OAuthSignIn(object):
-    providers = None
-
-    def __init__(self, provider_name):
-        self.provider_name = 'facebook' #provider_name
-        credentials = OAUTH_CREDENTIALS[provider_name]
-        self.consumer_id = credentials['id']
-        self.consumer_secret = credentials['secret']
-
-    def authorize(self):
-        pass
-
-    def callback(self):
-        pass
-
-    def get_callback_url(self):
-        return url_for('oauth_callback', provider=self.provider_name,
-                       _external=True)
-
-    @classmethod
-    def get_provider(self, provider_name):
-        if self.providers is None:
-            self.providers = {}
-            for provider_class in self.__subclasses__():
-                provider = provider_class()
-                self.providers[provider.provider_name] = provider
-        return self.providers[provider_name]
-
-class FacebookSignIn(OAuthSignIn):
-    def __init__(self):
-        super(FacebookSignIn, self).__init__('facebook')
-        self.service = OAuth2Service(
-            name = 'facebook',
-            client_id = self.consumer_id,
-            client_secret = self.consumer_secret,
-            authorize_url = 'https://graph.facebook.com/oauth/authorize',
-            access_token_url = 'https://graph.facebook.com/oauth/access_token',
-            base_url = 'https://graph.facebook.com'
-            )
-
-    def authorize(self):
-        return redirect(self.service.get_authorize_url(
-            scope='email',
-            info_fields='email, first_name',
-            response_type='code',
-            redirect_uri=self.get_callback_url())
-        )
-
-    def callback(self):
-        def decode_json(payload):
-            return json.loads(payload.decode('utf-8'))
-
-        if 'code' not in request.args:
-            return None, None, None
-        oauth_session = self.service.get_auth_session(
-            data = {'code': request.args['code'],
-                    'grant_type': 'authorization_code',
-                    'redirect_uri': self.get_callback_url()},
-            decoder=decode_json
-        )
-        me = oauth_session.get('me?fields=id,email,first_name').json()
-        return (
-            'facebook$' + me['id'],
-            me.get('first_name'),
-            me.get('email')
-        )
-
-class TwitterSignIn(OAuthSignIn):
-    pass
 
