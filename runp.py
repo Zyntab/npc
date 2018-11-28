@@ -1,3 +1,6 @@
 #! /usr/bin/python
 from app import app
-#app.run(debug=False)
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'User': User, 'Character': Character}
